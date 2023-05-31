@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 30 Maj 2023, 22:16
--- Wersja serwera: 10.4.27-MariaDB
--- Wersja PHP: 8.2.0
+-- Czas generowania: 31 Maj 2023, 09:50
+-- Wersja serwera: 10.4.21-MariaDB
+-- Wersja PHP: 8.0.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,9 +29,9 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `message` (
   `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL COMMENT 'name of the message',
-  `type` varchar(20) DEFAULT NULL COMMENT 'type of the message\r\n(private/public)',
-  `message` varchar(2000) NOT NULL COMMENT 'message text',
+  `name` varchar(255) COLLATE utf8_polish_ci NOT NULL COMMENT 'name of the message',
+  `type` varchar(20) COLLATE utf8_polish_ci DEFAULT NULL COMMENT 'type of the message\r\n(private/public)',
+  `message` varchar(2000) COLLATE utf8_polish_ci NOT NULL COMMENT 'message text',
   `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'existing message - 0, deleted - 1',
   `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
@@ -53,7 +53,8 @@ INSERT INTO `message` (`id`, `name`, `type`, `message`, `deleted`, `user_id`) VA
 (24, 'zad4_2', 'public', 'test zad4 nr2', 0, NULL),
 (26, 'zad4_3', 'public', '<script>alert(\\\'test zad4 nr3\\\');</script>', 0, NULL),
 (27, 'dodana nowa', 'public', 'sprawdzamy czy działa', 0, NULL),
-(29, 'pawel4', 'public', 'pawel4 dodaje wiadomość - edit', 0, 23);
+(29, 'pawel4', 'public', 'pawel4 dodaje wiadomość - edit', 0, 23),
+(30, 'sss', 'public', 'sss', 0, 28);
 
 -- --------------------------------------------------------
 
@@ -63,7 +64,7 @@ INSERT INTO `message` (`id`, `name`, `type`, `message`, `deleted`, `user_id`) VA
 
 CREATE TABLE `permissions` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL
+  `name` varchar(50) COLLATE utf8_polish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 --
@@ -88,7 +89,7 @@ INSERT INTO `permissions` (`id`, `name`) VALUES
 
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL
+  `name` varchar(50) COLLATE utf8_polish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 --
@@ -141,15 +142,15 @@ INSERT INTO `role_permission` (`role_id`, `permission_id`) VALUES
 
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
-  `login` varchar(30) NOT NULL,
-  `email` varchar(60) NOT NULL,
+  `login` varchar(30) COLLATE utf8_polish_ci NOT NULL,
+  `email` varchar(60) COLLATE utf8_polish_ci NOT NULL,
   `hash` blob DEFAULT NULL,
   `salt` blob DEFAULT NULL COMMENT 'salt to use in password hashing',
   `2fa` tinyint(4) DEFAULT NULL,
-  `sms_code` varchar(6) DEFAULT NULL COMMENT 'security code sent via sms or e-mail',
+  `sms_code` varchar(6) COLLATE utf8_polish_ci DEFAULT NULL COMMENT 'security code sent via sms or e-mail',
   `code_timelife` timestamp NULL DEFAULT NULL COMMENT 'timelife of security code',
-  `security_question` varchar(255) DEFAULT NULL COMMENT 'additional security question used while password recovering',
-  `answer` varchar(255) DEFAULT NULL COMMENT 'security question answer',
+  `security_question` varchar(255) COLLATE utf8_polish_ci DEFAULT NULL COMMENT 'additional security question used while password recovering',
+  `answer` varchar(255) COLLATE utf8_polish_ci DEFAULT NULL COMMENT 'security question answer',
   `lockout_time` timestamp NULL DEFAULT NULL COMMENT 'time to which user account is blocked',
   `session_id` blob DEFAULT NULL COMMENT 'user session identifier',
   `id_status` int(11) NOT NULL COMMENT 'account status',
@@ -174,7 +175,9 @@ INSERT INTO `user` (`id`, `login`, `email`, `hash`, `salt`, `2fa`, `sms_code`, `
 (21, 'pawel2', 'pawel2@gmail.com', 0x6131333564643935313431616638353335623137383465653764316531306233343262656239653138623031393733353838323664353963323330343761343063623536343962336137633165656135643434323236353634396461396334313136313532383535396366373035343234336363323334306232663834623330, 0x877027825d17a187b662110f4da0c05b, 1, '125401', '2023-05-30 17:45:03', NULL, NULL, NULL, NULL, 1, 1),
 (22, 'pawel3', 'pawel3@gmail.com', 0x3861323464386234313662363562653239663162316335663963313766623864326661366461353436323930613562316564363063633633356135356130643636666162336236366234306439363930373366663035356339306636306466323732616333626337306662363336356562303565353863323735316565343263, 0xf32660f47fe177170c73397d4b3a5e3f, 0, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1),
 (23, 'pawel4', 'pawel4@gmail.com', 0x6135326233366637323465396430653937373633373734383136373961623136353439663166653538346666386164653434653932383864353034306466383138396330323338373137646333646262613562663064366637323166626665353364333164393036663134376463653434326639356264663137393738363933, 0xd9fcafa8453ec2de3c8e58bb009b3116, 0, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1),
-(24, 'pawel5', 'pawel5@gmail.com', 0x3861373838313833383264346365643662353635643930633266373630373339313666626331323864313861653638396661326163656235363264656333616334396233333563643236613663306163353963366438306439363230376533656562333039626664353933323736663733663063316631373632663538356134, 0xb5495b23225d10fbbc9d07a2dae45601, 0, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1);
+(24, 'pawel5', 'pawel5@gmail.com', 0x3861373838313833383264346365643662353635643930633266373630373339313666626331323864313861653638396661326163656235363264656333616334396233333563643236613663306163353963366438306439363230376533656562333039626664353933323736663733663063316631373632663538356134, 0xb5495b23225d10fbbc9d07a2dae45601, 0, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1),
+(27, 'ada', 'ada@ada.pl', 0x3734326165636234613036663335303737383831326162353862346461353366386531623365626561343336643133653937343632326263666332303232383365356365396135313534313435633962343431353535353532653464383132396430663930343530666166346666626435653365383837663364336338653434, 0x78304ed0c40c74ea92e754b7b0cf8218, 0, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1),
+(28, 'sss', 'sss@sss.pl', 0x6263386337303037663239333334353365316435646335666164326164306634396430396130376539393732663731646635383230326366343632383462646539303662323164376331643765646331343830626266376166343635323432333633353765653830346133633834363838663962646462316632656633333334, 0xcfb217678fa038b5b40afc77e0f338ff, 0, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -187,7 +190,7 @@ CREATE TABLE `users_sessions` (
   `data_login` timestamp NULL DEFAULT NULL,
   `data_logout` timestamp NULL DEFAULT NULL,
   `hash_session_id` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Zrzut danych tabeli `users_sessions`
@@ -197,9 +200,17 @@ INSERT INTO `users_sessions` (`user_id`, `data_login`, `data_logout`, `hash_sess
 (19, '2023-05-30 19:18:36', '2023-05-30 19:20:15', '4a3a28c5946d56760dc216a6ebb1c9533d7ca0ac528b074636861baee474e3f0'),
 (23, '2023-05-30 19:20:22', '2023-05-30 19:21:10', 'ed097ec801f008dc5cab216e9c2e270838d10570047823e432f49d9d84abae1d'),
 (19, '2023-05-30 19:21:20', '2023-05-30 19:22:02', 'cabcbb3b0f92526cd9122fdda36d0f947395513fa3d11492569741bf0f901c5a'),
-(19, '2023-05-30 19:55:31', NULL, 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'),
+(19, '2023-05-30 19:55:31', '2023-05-31 01:01:06', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'),
 (19, '2023-05-30 19:55:42', '2023-05-30 20:02:04', 'ce097b44fc35dea3a5a569bd091e11630575825fa73cc00449a7dba2680bbdee'),
-(19, '2023-05-30 20:02:13', NULL, 'b9d545ea81f49995bbe9e786646ac1aef5d579ff379faec3cf7fbc37bf7a5765');
+(19, '2023-05-30 20:02:13', NULL, 'b9d545ea81f49995bbe9e786646ac1aef5d579ff379faec3cf7fbc37bf7a5765'),
+(23, '2023-05-30 23:11:49', '2023-05-31 01:01:30', 'caf2a49facce4e18ddf11cddc1eb573897dbfd291f77574ad8836cc33246e2e0'),
+(27, '2023-05-31 01:01:23', '2023-05-31 01:01:30', 'caf2a49facce4e18ddf11cddc1eb573897dbfd291f77574ad8836cc33246e2e0'),
+(19, '2023-05-31 01:01:37', '2023-05-31 01:21:57', 'dbc6f1bfc91d9deb5f2b7f065d8714a3325b842a286a6618c9f2a8ac5694d79a'),
+(27, '2023-05-31 01:22:01', '2023-05-31 06:03:39', 'd59eb6599899cb93e809b97615abd352befdcd741d37bd28c8d4ab3b1160228f'),
+(27, '2023-05-31 05:55:48', '2023-05-31 06:03:39', 'd59eb6599899cb93e809b97615abd352befdcd741d37bd28c8d4ab3b1160228f'),
+(28, '2023-05-31 06:04:28', NULL, 'f57feb4c0e4c20d4b0c97b1a640df6c22599d3e53e0e61aa924ac1ba0587ebd6'),
+(28, '2023-05-31 07:09:31', NULL, 'f57feb4c0e4c20d4b0c97b1a640df6c22599d3e53e0e61aa924ac1ba0587ebd6'),
+(27, '2023-05-31 07:45:32', NULL, 'f57feb4c0e4c20d4b0c97b1a640df6c22599d3e53e0e61aa924ac1ba0587ebd6');
 
 -- --------------------------------------------------------
 
@@ -211,6 +222,20 @@ CREATE TABLE `user_permission` (
   `user_id` int(11) NOT NULL,
   `permission_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
+--
+-- Zrzut danych tabeli `user_permission`
+--
+
+INSERT INTO `user_permission` (`user_id`, `permission_id`) VALUES
+(27, 1),
+(27, 4),
+(27, 5),
+(27, 6),
+(27, 7),
+(27, 8),
+(27, 9),
+(27, 10);
 
 -- --------------------------------------------------------
 
@@ -229,7 +254,8 @@ CREATE TABLE `user_role` (
 
 INSERT INTO `user_role` (`user_id`, `role_id`) VALUES
 (19, 1),
-(22, 5);
+(22, 5),
+(27, 1);
 
 --
 -- Indeksy dla zrzutów tabel
@@ -291,7 +317,7 @@ ALTER TABLE `user_role`
 -- AUTO_INCREMENT dla tabeli `message`
 --
 ALTER TABLE `message`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT dla tabeli `permissions`
@@ -309,7 +335,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT dla tabeli `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- Ograniczenia dla zrzutów tabel
